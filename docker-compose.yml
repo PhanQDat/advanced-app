@@ -31,6 +31,7 @@ services:
       dockerfile: Dockerfile
     # Dùng script wait-for-it để bắt App đợi cho tới khi Postgres khỏe mạnh mới chính thức chạy
     image: phanqdat/advanced-app:latest
+    restart: always
     environment:
       DB_HOST: postgres
       DB_USER: myuser
