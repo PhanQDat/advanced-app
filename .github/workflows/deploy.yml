@@ -23,5 +23,7 @@ jobs:
           # Ép Docker Compose build lại code Node.js mới và khởi động lại container app
           docker compose up -d --build 
           
+          docker ps -a
+          
           # Dọn dẹp các Docker image cũ/thừa để tránh đầy ổ cứng EC2
           docker image prune -f
