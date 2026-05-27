@@ -1,0 +1,24 @@
+name: CI/CD Pipeline via Self-Hosted Runner
+
+on:
+  push:
+    branches: [ "main" ] # Kích hoạt mỗi khi bạn push code mới vào nhánh main
+
+jobs:
+  deploy-on-ec2:
+    runs-on: [self-hosted, Linux, X64] # Chỉ định chạy trên con Runner EC2 bạn vừa bật
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy Application
+        run: |
+          # Di chuyển vào đúng thư mục chứa docker-compose.yml trên EC2
+          cd ~/advanced-app
+          
+          # Ép Docker Compose build lại code Node.js mới và khởi động lại container app
+          docker compose up -d --build app
+          
+          # Dọn dẹp các Docker image cũ/thừa để tránh đầy ổ cứng EC2
+          docker image prune -f
