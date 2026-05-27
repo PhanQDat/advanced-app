@@ -1,0 +1,60 @@
+services:
+  # 1. Cơ sở dữ liệu PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    # Tính năng Healthcheck: Đảm bảo Postgres thực sự sẵn sàng nhận kết nối mới báo là "healthy"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./db:/var/lib/postgresql/data
+
+  # 2. Bộ nhớ đệm Redis
+  redis:
+    image: redis:alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 3. Ứng dụng Node.js chính
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    # Dùng script wait-for-it để bắt App đợi cho tới khi Postgres khỏe mạnh mới chính thức chạy
+    image: phanqdat/advanced-app:latest
+    environment:
+      DB_HOST: postgres
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+      DB_NAME: mydb
+      DB_PORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    #ports:
+    #  - "2000:3000"
+    #network_mode: host
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  #4. Proxy đứng trước bọc lót cho App
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: phanqdat/advanced-nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - app
