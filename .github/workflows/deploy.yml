@@ -17,9 +17,6 @@ jobs:
           # Di chuyển vào đúng thư mục chứa docker-compose.yml trên EC2
           cd ~/advanced-app
           
-          # Pull code mới nhất về (nếu cần)
-          git pull origin main
-          
           # Pull các image mới nhất từ Docker Hub về (bao gồm cả Nginx)
           docker compose pull
           
