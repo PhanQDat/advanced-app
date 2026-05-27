@@ -17,9 +17,6 @@ jobs:
           # Di chuyển vào đúng thư mục chứa docker-compose.yml trên EC2
           cd ~/advanced-app
           
-          # clone source
-          git clone https://github.com/PhanQDat/advanced-app
-          
           # Pull code mới nhất về (nếu cần)
           git pull origin main
           
