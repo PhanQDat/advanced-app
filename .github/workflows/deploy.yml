@@ -18,7 +18,7 @@ jobs:
           cd ~/advanced-app
           
           # clone source
-          gitclone https://github.com/PhanQDat/advanced-app
+          git clone https://github.com/PhanQDat/advanced-app
           
           # Pull code mới nhất về (nếu cần)
           git pull origin main
